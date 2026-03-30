@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GDD — Untitled Roguelite</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0f0f0d;
+    --bg2:       #161613;
+    --bg3:       #1e1e1a;
+    --bg4:       #252520;
+    --border:    #2e2e28;
+    --border2:   #3a3a32;
+    --text:      #d4d0c4;
+    --text2:     #8a8778;
+    --text3:     #555248;
+    --accent:    #c8a44a;
+    --accent2:   #8b6b24;
+    --accent-dim:#c8a44a22;
+    --green:     #5a8a5a;
+    --green-bg:  #1a2a1a;
+    --blue:      #4a7aaa;
+    --blue-bg:   #141e2a;
+    --red:       #aa5050;
+    --red-bg:    #2a1414;
+    --twist:     #4a88aa;
+    --twist-bg:  #102030;
+    --later:     #8a7040;
+    --later-bg:  #221a08;
+    --mono:      'JetBrains Mono', monospace;
+    --sans:      'Syne', sans-serif;
+    --serif:     'Lora', serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 0 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(90deg, var(--border) 0, var(--border) 1px, transparent 1px, transparent 60px),
+      repeating-linear-gradient(0deg, var(--border) 0, var(--border) 1px, transparent 1px, transparent 60px);
+    opacity: 0.25;
+    pointer-events: none;
+  }
+  .header-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+    position: relative;
+  }
+  .doc-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: .75rem;
+  }
+  h1 {
+    font-family: var(--sans);
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 700;
+    color: #f0ece0;
+    line-height: 1.1;
+    margin-bottom: .5rem;
+    letter-spacing: -.02em;
+  }
+  h1 span { color: var(--accent); }
+  .doc-meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text3);
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  .doc-meta span::before { content: '// '; color: var(--text3); }
+
+  .layout {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 0 3rem;
+    align-items: start;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 2rem;
+    padding: 2rem 0;
+  }
+  .nav-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: .75rem;
+    padding-left: .75rem;
+    border-left: 2px solid var(--border);
+  }
+  .nav-list { list-style: none; }
+  .nav-list li { margin-bottom: 2px; }
+  .nav-list a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: .45rem .75rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 13px;
+    color: var(--text2);
+    border-left: 2px solid transparent;
+    transition: all .15s;
+  }
+  .nav-list a:hover { color: var(--text); background: var(--bg3); border-left-color: var(--border2); }
+  .nav-list a.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-dim); }
+  .nav-num { font-family: var(--mono); font-size: 10px; color: var(--text3); min-width: 18px; }
+  .nav-divider { height: 1px; background: var(--border); margin: .75rem 0; }
+
+  .main { padding: 2.5rem 0 4rem; }
+
+  .section { margin-bottom: 3.5rem; scroll-margin-top: 2rem; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon {
+    width: 36px; height: 36px;
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    background: var(--bg3);
+    flex-shrink: 0;
+  }
+  .section-titles { flex: 1; }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: .1em;
+    margin-bottom: 2px;
+  }
+  h2 { font-family: var(--sans); font-size: 20px; font-weight: 600; color: #f0ece0; letter-spacing: -.01em; }
+
+  .subsection { margin-bottom: 1.75rem; }
+  h3 {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text3);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: .75rem;
+    padding-bottom: .4rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .entry {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 8px 16px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    align-items: start;
+  }
+  .entry:last-child { border-bottom: none; }
+  .entry-key { font-family: var(--mono); font-size: 12px; color: var(--text2); padding-top: 1px; }
+  .entry-val { color: var(--text); line-height: 1.6; }
+
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-left: 5px;
+  }
+  .tag-later { background: var(--later-bg); color: var(--later); border: 1px solid var(--later); }
+  .tag-twist { background: var(--twist-bg); color: var(--twist); border: 1px solid var(--twist); }
+  .tag-done  { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
+
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: .6rem; }
+  .pill { font-size: 12px; font-family: var(--mono); padding: 4px 12px; border-radius: 999px; border: 1px solid; }
+  .pill-green { color: var(--green); border-color: var(--green); background: var(--green-bg); }
+  .pill-blue  { color: var(--blue);  border-color: var(--blue);  background: var(--blue-bg);  }
+  .pill-amber { color: var(--accent);border-color: var(--accent2);background: var(--accent-dim); }
+  .pill-twist { color: var(--twist); border-color: var(--twist); background: var(--twist-bg); }
+
+  .note {
+    font-size: 13px;
+    font-family: var(--serif);
+    font-style: italic;
+    line-height: 1.7;
+    padding: .7rem 1rem;
+    border-radius: 0 5px 5px 0;
+    margin-top: .85rem;
+    border-left: 3px solid;
+  }
+  .note-warn    { color: #b89450; border-color: var(--accent2); background: var(--later-bg); }
+  .note-info    { color: #5a8aaa; border-color: var(--blue);    background: var(--blue-bg);  }
+  .note-success { color: #5a8a5a; border-color: var(--green);   background: var(--green-bg); }
+  .note-twist   { color: var(--twist); border-color: var(--twist); background: var(--twist-bg); }
+
+  .room-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: .6rem; }
+  .room-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: .7rem .85rem;
+    background: var(--bg2);
+    transition: border-color .15s;
+  }
+  .room-card:hover { border-color: var(--border2); }
+  .room-card.wide  { grid-column: span 3; }
+  .room-card.done  { border-color: var(--green); }
+  .room-label { font-family: var(--sans); font-size: 13px; font-weight: 600; color: #d4d0c4; margin-bottom: 4px; }
+  .room-desc  { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+  .step-list { list-style: none; }
+  .step-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .step-list li:last-child { border-bottom: none; }
+  .step-num {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--border2);
+    background: var(--bg3);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+
+  .stat-table { width: 100%; border-collapse: collapse; margin-top: .4rem; }
+  .stat-table th {
+    font-family: var(--mono); font-size: 10px; color: var(--text3);
+    text-transform: uppercase; letter-spacing: .08em; text-align: left;
+    padding: 6px 12px; background: var(--bg3); border-bottom: 1px solid var(--border);
+  }
+  .stat-table td { font-size: 13px; padding: 7px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .stat-table td:first-child { font-family: var(--mono); color: var(--accent); font-size: 12px; }
+  .stat-table td:last-child { color: var(--text2); font-size: 12px; }
+  .stat-table tr:last-child td { border-bottom: none; }
+  .stat-table tr:hover td { background: var(--bg3); }
+
+  .impl-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: .5rem; }
+  .impl-card {
+    display: flex; gap: 10px; padding: .75rem;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg2); align-items: flex-start; transition: border-color .15s;
+  }
+  .impl-card:hover { border-color: var(--border2); }
+  .impl-card.done { border-color: var(--green); background: var(--green-bg); }
+  .impl-card.done .impl-n { color: var(--green); }
+  .impl-n { font-family: var(--mono); font-size: 12px; color: var(--accent); font-weight: 500; flex-shrink: 0; min-width: 24px; }
+  .impl-body { flex: 1; }
+  .impl-title { font-size: 13px; font-weight: 600; color: #d4d0c4; margin-bottom: 2px; }
+  .impl-desc  { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+  .milestone-list { list-style: none; margin-top: .5rem; }
+  .milestone-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 9px 0; border-bottom: 1px solid var(--border);
+    font-size: 14px; line-height: 1.6; color: var(--text);
+  }
+  .milestone-list li:last-child { border-bottom: none; }
+  .ms-icon { flex-shrink: 0; font-size: 14px; margin-top: 2px; }
+  .ms-text { flex: 1; }
+  .ms-label {
+    font-family: var(--mono); font-size: 10px;
+    padding: 1px 7px; border-radius: 3px;
+    border: 1px solid var(--green); color: var(--green);
+    background: var(--green-bg); margin-left: 6px; vertical-align: middle;
+  }
+
+  .item-card {
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: .75rem 1rem; background: var(--bg2); margin-bottom: 8px;
+  }
+  .item-name { font-family: var(--sans); font-size: 14px; font-weight: 600; color: #d4d0c4; margin-bottom: 6px; }
+  .item-stats { display: flex; flex-wrap: wrap; gap: 6px; }
+  .item-stat { font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 3px; border: 1px solid; }
+  .item-stat.up   { color: var(--green); border-color: var(--green); background: var(--green-bg); }
+  .item-stat.down { color: var(--red);   border-color: var(--red);   background: var(--red-bg);  }
+
+  .progress-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .progress-row:last-child { border-bottom: none; }
+  .progress-label { width: 130px; font-family: var(--mono); font-size: 11px; color: var(--text2); flex-shrink: 0; }
+  .progress-bar   { flex: 1; height: 4px; background: var(--bg4); border-radius: 2px; overflow: hidden; }
+  .progress-fill  { height: 100%; background: var(--accent); border-radius: 2px; }
+  .progress-fill.done { background: var(--green); }
+  .progress-val   { font-family: var(--mono); font-size: 11px; color: var(--text3); min-width: 36px; text-align: right; }
+
+  footer { border-top: 1px solid var(--border); padding: 1.5rem 0; margin-top: 2rem; }
+  .footer-inner {
+    max-width: 860px; margin: 0 auto; padding: 0 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+    font-family: var(--mono); font-size: 11px; color: var(--text3);
+  }
+
+  @media (max-width: 700px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    header, .layout, .footer-inner { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .room-grid { grid-template-columns: 1fr 1fr; }
+    .room-card.wide { grid-column: span 2; }
+    .impl-grid { grid-template-columns: 1fr; }
+    .entry { grid-template-columns: 1fr; gap: 2px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="doc-eyebrow">Game Design Document · Phase 1</div>
+    <h1>Mushroom <span>Roguelite</span></h1>
+    <p style="color:var(--text2);font-size:14px;margin-top:.5rem;">Top-down 2D · Godot 4.6.1 · Shovel &amp; Sword · Mushroom-themed items</p>
+    <div class="doc-meta">
+      <span>Pre-production foundations</span>
+      <span>Godot 4.6.1</span>
+      <span>GDScript</span>
+      <span>v0.3 — living document</span>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="nav-label">Contents</div>
+    <ul class="nav-list">
+      <li><a href="#milestones" class="active"><span class="nav-num">00</span>Milestones</a></li>
+      <li><a href="#movement"><span class="nav-num">01</span>Movement &amp; Combat</a></li>
+      <li><a href="#health"><span class="nav-num">02</span>Health &amp; Stats</a></li>
+      <li><a href="#rooms"><span class="nav-num">03</span>Room Types</a></li>
+      <li><a href="#generation"><span class="nav-num">04</span>Map Generation</a></li>
+      <li><a href="#items"><span class="nav-num">05</span>Items &amp; Economy</a></li>
+      <li><a href="#order"><span class="nav-num">06</span>Build Order</a></li>
+    </ul>
+    <div class="nav-divider"></div>
+    <div class="nav-label">Progress</div>
+    <div style="padding:0 .5rem;margin-top:.25rem;">
+      <div class="progress-row">
+        <span class="progress-label">Player ctrl</span>
+        <div class="progress-bar"><div class="progress-fill done" style="width:100%"></div></div>
+        <span class="progress-val" style="color:var(--green)">100%</span>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Stats system</span>
+        <div class="progress-bar"><div class="progress-fill done" style="width:100%"></div></div>
+        <span class="progress-val" style="color:var(--green)">100%</span>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Room system</span>
+        <div class="progress-bar"><div class="progress-fill done" style="width:100%"></div></div>
+        <span class="progress-val" style="color:var(--green)">100%</span>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Room gen</span>
+        <div class="progress-bar"><div class="progress-fill done" style="width:100%"></div></div>
+        <span class="progress-val" style="color:var(--green)">100%</span>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Item system</span>
+        <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
+        <span class="progress-val">40%</span>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Minimap HUD</span>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <span class="progress-val">0%</span>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">First boss</span>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <span class="progress-val">0%</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- 00 · MILESTONES -->
+    <section class="section" id="milestones">
+      <div class="section-header">
+        <div class="section-icon">🏁</div>
+        <div class="section-titles">
+          <div class="section-num">SECTION 00</div>
+          <h2>Development Milestones</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Completed</h3>
+        <ul class="milestone-list">
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text">Project structure — scenes, scripts, data, autoloads organized by system. Git shared remote at <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">/storage/Roguelite game.git</code>. Branch strategy: main → dev → feature/*. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>EventBus</strong> autoload — global signal pipeline. All systems communicate through signals without direct coupling. Signals include player_damaged, player_died, enemy_killed, room_cleared, item_picked_up, dig_used, tile_dug and more. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>GameManager</strong> autoload — run state, seed management, per-zone cleared tracking. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>PlayerStats</strong> resource — full stat sheet as a Godot Resource. Duplicated on run start so each run is fully independent. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>Player controller</strong> — 8-directional normalized movement, sword arc swing (120° tween EASE_OUT), shovel utility tool with DigDetector raycast, dodge roll with i-frames. Sword sprite always visible and rotates to mouse. Shovel flashes briefly on use and is invisible at rest. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>DummyEnemy</strong> — stationary target with HP, hit count, and cumulative damage tracking in logs. Used to validate combat hitboxes and damage pipeline. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>Combat room</strong> — velocity-based door detection (player must be moving toward door to trigger), doors lock on room entry, enemy spawner, room unlocks on all enemies cleared. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>Room generation system</strong> — RoomData resource defines template scene, enemy pool, spawn zone Rect2, and obstacle settings. RoomGenerator autoload instantiates templates and scatters enemies within spawn zones at runtime. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>RoomManager</strong> autoload — handles all room transitions. Player node is reparented rather than destroyed. Spawns at the correct opposing door. Hand-crafted rooms (treasure, boss) bypass the generator and load directly. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>World scene</strong> — persistent root. Rooms swap in and out as children. Player persists across all transitions. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>Treasure room</strong> — 2 hovering mushroom pedestals (sine-wave hover animation, randomized phase offset so they don't sync). Player walks over one to pick it up — the other disappears immediately. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>ItemData resource + stat pipeline</strong> — items apply bonuses and penalties directly to PlayerStats on pickup. Negative max_hp_bonus floors at 2 hearts minimum. First item live: <strong>Violet Cortinarius</strong>. <span class="ms-label">done</span></span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>Up next</h3>
+        <ul class="milestone-list">
+          <li><span class="ms-icon">⬜</span><span class="ms-text">Minimap HUD — corner minimap rendering the room grid, visited rooms, and special room type icons.</span></li>
+          <li><span class="ms-icon">⬜</span><span class="ms-text">Expand item pool — more mushroom items with varied stat trade-offs and thematic lore.</span></li>
+          <li><span class="ms-icon">⬜</span><span class="ms-text">First real enemy — chase AI, contact damage, and behavioural state machine.</span></li>
+          <li><span class="ms-icon">⬜</span><span class="ms-text">Full map generation — directional zone world, biome theming, boss room placement at max depth.</span></li>
+          <li><span class="ms-icon">⬜</span><span class="ms-text">First boss — multi-phase scripted AI, boss room logic, guaranteed major item drop.</span></li>
+          <li><span class="ms-icon">⬜</span><span class="ms-text">Two-layer dig system — the big twist. Shovel opens access to the underground layer. Everything is designed to accommodate this without being torn apart.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 01 · MOVEMENT & COMBAT -->
+    <section class="section" id="movement">
+      <div class="section-header">
+        <div class="section-icon">⚔️</div>
+        <div class="section-titles">
+          <div class="section-num">SECTION 01</div>
+          <h2>Player Movement &amp; Combat</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Movement</h3>
+        <div class="entry"><span class="entry-key">style</span><span class="entry-val">8-directional top-down. Diagonal velocity normalized — no speed bonus on diagonals.</span></div>
+        <div class="entry"><span class="entry-key">input</span><span class="entry-val">WASD movement. Mouse aim for all weapons. Space for dodge roll. Gamepad supported.</span></div>
+        <div class="entry"><span class="entry-key">feel</span><span class="entry-val">Instant acceleration with a very short lerp. No physics simulation — snappy and responsive.</span></div>
+        <div class="entry"><span class="entry-key">speed</span><span class="entry-val">Base 200 px/s. Items add flat bonuses via move_speed stat.</span></div>
+        <div class="entry"><span class="entry-key">room transition</span><span class="entry-val">Player must be moving toward a door for it to trigger. Velocity is zeroed on spawn in the new room — prevents chain transitions.</span></div>
+      </div>
+
+      <div class="subsection">
+        <h3>Shovel — pure utility tool <span class="tag tag-twist">big twist anchor</span></h3>
+        <div class="entry"><span class="entry-key">identity</span><span class="entry-val">The shovel does NOT deal damage. It is a utility tool only. One use per room — dig or swing, the action is consumed either way.</span></div>
+        <div class="entry"><span class="entry-key">dig</span><span class="entry-val">DigDetector RayCast2D checks for diggable tiles (physics layer 4) in the aim direction. If can_dig is true and a tile is found, a dig is performed — emitting dig_used, dig_attempted and tile_dug signals.</span></div>
+        <div class="entry"><span class="entry-key">swing fallback</span><span class="entry-val">If no diggable tile is present or can_dig is false, the shovel plays a short visible flash swing. No damage dealt.</span></div>
+        <div class="entry"><span class="entry-key">cooldown</span><span class="entry-val">0.5s on both dig and swing. Modified by attack_speed_multiplier.</span></div>
+        <div class="entry"><span class="entry-key">reset</span><span class="entry-val">can_dig resets to true every time the player enters a new room via reset_dig().</span></div>
+        <div class="note note-twist">The shovel opens the underground layer — the game's defining mechanic. Design space is intentionally reserved here for a later phase.</div>
+      </div>
+
+      <div class="subsection">
+        <h3>Sword — primary weapon</h3>
+        <div class="entry"><span class="entry-key">visual</span><span class="entry-val">Always visible sprite rotating to face the mouse cursor via WeaponPivot Node2D.</span></div>
+        <div class="entry"><span class="entry-key">attack</span><span class="entry-val">120° arc tweened with EASE_OUT. Starts −60° from aim, ends +60°. Hitbox (CircleShape2D) active the entire sweep. Left mouse button.</span></div>
+        <div class="entry"><span class="entry-key">cooldown</span><span class="entry-val">0.6s base, divided by attack_speed_multiplier.</span></div>
+        <div class="entry"><span class="entry-key">range</span><span class="entry-val">Hitbox circle radius — base 35px. Increased by sword_range stat from items. Visibly larger arc.</span></div>
+        <div class="entry"><span class="entry-key">dodge roll</span><span class="entry-val">Space. Short dash in movement direction (or aim direction if standing still). Grants i-frames for dodge duration. 1.0s cooldown.</span></div>
+        <div class="entry"><span class="entry-key">i-frames</span><span class="entry-val">Dodge roll only — not on swings. 0.8s i-frames on hit received, separate from dodge.</span></div>
+        <div class="pills">
+          <span class="pill pill-green">Sword = damage</span>
+          <span class="pill pill-amber">Shovel = utility only</span>
+          <span class="pill pill-blue">Dodge = survival</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 · HEALTH & STATS -->
+    <section class="section" id="health">
+      <div class="section-header">
+        <div class="section-icon">❤️</div>
+        <div class="section-titles">
+          <div class="section-num">SECTION 02</div>
+          <h2>Damage, Health &amp; Player Stats</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Health system</h3>
+        <div class="entry"><span class="entry-key">base HP</span><span class="entry-val">6 hearts (12 half-hearts). Displayed as heart icons in the HUD.</span></div>
+        <div class="entry"><span class="entry-key">damage taken</span><span class="entry-val">Enemies deal half-heart increments. Boss attacks deal full hearts. Armour absorbs flat damage before HP loss.</span></div>
+        <div class="entry"><span class="entry-key">healing</span><span class="entry-val">Found in idle rooms, dropped by mini-bosses. No passive regeneration.</span></div>
+        <div class="entry"><span class="entry-key">heart containers</span><span class="entry-val">Max HP raised or lowered by items. Negative items cannot reduce max HP below 2 hearts (1 full heart). Current HP clamped to new max on pickup.</span></div>
+        <div class="entry"><span class="entry-key">hit i-frames</span><span class="entry-val">0.8s invincibility after taking damage. Visual sprite flash as indicator.</span></div>
+      </div>
+
+      <div class="subsection">
+        <h3>PlayerStats resource — full stat sheet</h3>
+        <table class="stat-table">
+          <thead>
+            <tr><th>Stat</th><th>Description</th><th>Default</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>max_hp</td><td>Total heart containers. Items raise or lower. Floor: 2.</td><td>6</td></tr>
+            <tr><td>current_hp</td><td>Current health. Clamped to max_hp on heal.</td><td>6</td></tr>
+            <tr><td>move_speed</td><td>Base movement speed px/s. Items add flat bonuses.</td><td>200.0</td></tr>
+            <tr><td>sword_damage</td><td>Base flat damage per sword hit.</td><td>1.0</td></tr>
+            <tr><td>sword_range</td><td>Hitbox circle radius in px. Items increase this directly.</td><td>35.0</td></tr>
+            <tr><td>sword_cooldown</td><td>Time between swings. Divided by attack_speed_multiplier.</td><td>0.6s</td></tr>
+            <tr><td>attack_speed_multiplier</td><td>Divides all weapon cooldowns. Items add to this.</td><td>1.0×</td></tr>
+            <tr><td>shovel_cooldown</td><td>Cooldown for dig and swing fallback.</td><td>0.5s</td></tr>
+            <tr><td>dodge_speed</td><td>Velocity during dodge roll.</td><td>500.0</td></tr>
+            <tr><td>dodge_duration</td><td>Duration of i-frames during roll.</td><td>0.2s</td></tr>
+            <tr><td>dodge_cooldown</td><td>Time between rolls.</td><td>1.0s</td></tr>
+            <tr><td>luck</td><td>Integer. Affects item quality rolls and rare drop chances.</td><td>0</td></tr>
+            <tr><td>armour</td><td>Flat damage absorbed per hit before HP loss.</td><td>0</td></tr>
+            <tr><td>can_dig</td><td>Bool. One dig per room. Reset to true on room entry.</td><td>true</td></tr>
+            <tr><td>has_flight</td><td>Bool flag. Reserved for two-layer system.</td><td>false</td></tr>
+          </tbody>
+        </table>
+        <div class="note note-info">Shovel damage has been removed entirely. The shovel is a pure utility tool and will never deal damage under any circumstances.</div>
+      </div>
+
+      <div class="subsection">
+        <h3>Death &amp; roguelite loop</h3>
+        <div class="entry"><span class="entry-key">on death</span><span class="entry-val">Run ends. Permadeath. Return to main menu / hub. No mid-run saves.</span></div>
+        <div class="entry"><span class="entry-key">meta-progression</span><span class="entry-val">Persistent unlocks: new items enter pool, new room variants, cosmetics. <span class="tag tag-later">later</span></span></div>
+        <div class="entry"><span class="entry-key">run seed</span><span class="entry-val">Every run has a visible seed. Displayed on death screen for sharing and reproducibility. Also useful for debugging specific runs.</span></div>
+      </div>
+    </section>
+
+    <!-- 03 · ROOM TYPES -->
+    <section class="section" id="rooms">
+      <div class="section-header">
+        <div class="section-icon">🗺️</div>
+        <div class="section-titles">
+          <div class="section-num">SECTION 03</div>
+          <h2>Room Types &amp; Layouts</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Room catalogue</h3>
+        <div class="room-grid">
+          <div class="room-card done">
+            <div class="room-label">🏠 Starting room <span class="tag tag-done">built</span></div>
+            <div class="room-desc">No enemies. All 4 doors open. Player spawns at center. West door leads to treasure room. All other doors lead to combat rooms.</div>
+          </div>
+          <div class="room-card done">
+            <div class="room-label">⚔️ Combat room <span class="tag tag-done">built</span></div>
+            <div class="room-desc">Doors lock on entry. Enemies placed procedurally by RoomGenerator into spawn zone. All enemies must be defeated to unlock doors.</div>
+          </div>
+          <div class="room-card">
+            <div class="room-label">💤 Idle room</div>
+            <div class="room-desc">No enemies. Trinkets or consumables on the floor. Environmental detail. No combat.</div>
+          </div>
+          <div class="room-card done">
+            <div class="room-label">💎 Treasure room <span class="tag tag-done">built</span></div>
+            <div class="room-desc">2 mushroom items on hovering pedestals. Walk over one to collect it — the other vanishes. Stat changes applied via ItemData.apply().</div>
+          </div>
+          <div class="room-card">
+            <div class="room-label">🔒 Secret room</div>
+            <div class="room-desc">No door marker. Found by digging a specific thin wall tile with the shovel. Rare item inside.</div>
+          </div>
+          <div class="room-card">
+            <div class="room-label">👹 Mini-boss room</div>
+            <div class="room-desc">One strong enemy. Guaranteed heart container or mid-tier item on defeat.</div>
+          </div>
+          <div class="room-card wide">
+            <div class="room-label">💀 Boss room</div>
+            <div class="room-desc">One per directional zone. Multi-phase boss fight. Guaranteed major item drop. Defeating it unlocks the next zone or ends the run.</div>
+          </div>
+        </div>
+        <div class="note note-success">Secret rooms use the shovel — not explosives like BoI. The player digs a diggable thin-wall tile to reveal the hidden entrance. Thematic, distinctive, and mechanically unique.</div>
+      </div>
+
+      <div class="subsection">
+        <h3>Layout philosophy</h3>
+        <div class="entry"><span class="entry-key">room size</span><span class="entry-val">1920×1080px. All rooms are the same dimensions — keeps door alignment consistent.</span></div>
+        <div class="entry"><span class="entry-key">door detection</span><span class="entry-val">Velocity-based. Player must be moving toward a door (velocity threshold ±10 px/s in door's axis) to trigger a transition.</span></div>
+        <div class="entry"><span class="entry-key">spawn points</span><span class="entry-val">Each room has 4 Marker2D spawn points (SpawnNorth, SpawnSouth, SpawnEast, SpawnWest) placed 100px+ inward from each door.</span></div>
+        <div class="entry"><span class="entry-key">templates</span><span class="entry-val">Hand-crafted tilemap templates as PackedScenes. RoomGenerator instantiates and scatters content on top.</span></div>
+        <div class="entry"><span class="entry-key">diggable tiles</span><span class="entry-val"><span class="tag tag-twist">twist</span> Tiles on physics layer 4 are diggable. DigDetector raycast checks this layer. Secret rooms hidden behind such tiles.</span></div>
+      </div>
+    </section>
+
+    <!-- 04 · MAP GENERATION -->
+    <section class="section" id="generation">
+      <div class="section-header">
+        <div class="section-icon">🧭</div>
+        <div class="section-titles">
+          <div class="section-num">SECTION 04</div>
+          <h2>Procedural Map Generation</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Directional zone world</h3>
+        <div class="entry"><span class="entry-key">structure</span><span class="entry-val">No floor descent. One sprawling 2D room grid. Zones defined by cardinal direction from start: North, East, South, West.</span></div>
+        <div class="entry"><span class="entry-key">zone themes</span><span class="entry-val">Each direction has a unique biome — tileset, enemy roster, ambient tone, and boss.</span></div>
+        <div class="entry"><span class="entry-key">zone depth</span><span class="entry-val">Manhattan distance from start. Near-centre rooms feel neutral. Deep rooms feel dangerous and themed.</span></div>
+        <div class="entry"><span class="entry-key">boss placement</span><span class="entry-val">Boss room at maximum depth in each direction.</span></div>
+      </div>
+
+      <div class="subsection">
+        <h3>Current implementation</h3>
+        <div class="entry"><span class="entry-key">RoomData</span><span class="entry-val">Godot Resource. Defines template scene, enemy pool, min/max enemy count, spawn zone Rect2, obstacle pool.</span></div>
+        <div class="entry"><span class="entry-key">RoomGenerator</span><span class="entry-val">Autoload. Instantiates template, sets active_doors, creates EnemySpawnPoints node with randomly scattered Marker2Ds, returns ready room Node2D.</span></div>
+        <div class="entry"><span class="entry-key">RoomManager</span><span class="entry-val">Autoload. Picks from ROOM_POOLS (generated) or DIRECT_SCENES (hand-crafted). Swaps rooms as children of World. Player is reparented not destroyed.</span></div>
+      </div>
+
+      <div class="subsection">
+        <h3>Full world generation <span class="tag tag-later">later</span></h3>
+        <ol class="step-list">
+          <li><span class="step-num">1</span>Place starting room at (0, 0).</li>
+          <li><span class="step-num">2</span>BFS expansion outward up to max-depth per zone.</li>
+          <li><span class="step-num">3</span>Mandatory rooms placed first (combat quota, 1 treasure, 1 mini-boss, 1 boss per zone).</li>
+          <li><span class="step-num">4</span>Secret rooms adjacent to dead-ends only. No door marker.</li>
+          <li><span class="step-num">5</span>Connect rooms by activating correct doors on adjacent pairs.</li>
+          <li><span class="step-num">6</span>Assign templates by zone pool, room type and depth.</li>
+          <li><span class="step-num">7</span>Validate reachability and mandatory counts. Re-seed on failure.</li>
+        </ol>
+        <div class="note note-warn">Zone gate conditions planned post-MVP: e.g. South zone requires East boss cleared first. Non-linear but structured progression without hard floor ordering.</div>
+      </div>
+
+      <div class="subsection">
+        <h3>Minimap HUD <span class="tag tag-later">next milestone</span></h3>
+        <div class="entry"><span class="entry-key">display</span><span class="entry-val">Corner minimap. Rooms as small squares. Current room highlighted. Unvisited rooms dark.</span></div>
+        <div class="entry"><span class="entry-key">icons</span><span class="entry-val">Room-type icon on visited special rooms.</span></div>
+        <div class="entry"><span class="entry-key">secret rooms</span><span class="entry-val">Never shown until physically entered.</span></div>
+      </div>
+    </section>
+
+    <!-- 05 · ITEMS -->
+    <section class="section" id="items">
+      <div class="section-header">
+        <div class="section-icon">🍄</div>
+        <div class="section-titles">
+          <div class="section-num">SECTION 05</div>
+          <h2>Item Acquisition &amp; Economy</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Theme — all items are mushrooms</h3>
+        <div class="note note-info">Every item in the game is a real mushroom or mushroom-related organism. Stat trade-offs, lore, and visual design are grounded in the mushroom's real-world properties — toxicity, rarity, colour, and ecological role.</div>
+      </div>
+
+      <div class="subsection">
+        <h3>Item categories</h3>
+        <div class="pills">
+          <span class="pill pill-amber">Passive — permanent stat modifiers</span>
+          <span class="pill pill-twist">Active — cooldown abilities (1 slot)</span>
+          <span class="pill pill-green">Trinkets — minor bonuses (2 slots)</span>
+          <span class="pill pill-blue">Consumables — single-use pickups</span>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Stat modifiers on ItemData</h3>
+        <div class="entry"><span class="entry-key">sword_damage_bonus</span><span class="entry-val">Flat addition to sword_damage.</span></div>
+        <div class="entry"><span class="entry-key">move_speed_bonus</span><span class="entry-val">Flat addition to move_speed in px/s.</span></div>
+        <div class="entry"><span class="entry-key">attack_speed_bonus</span><span class="entry-val">Added to attack_speed_multiplier — divides all weapon cooldowns.</span></div>
+        <div class="entry"><span class="entry-key">max_hp_bonus</span><span class="entry-val">Adds or removes heart containers. Negative allowed — floor at 2 hearts.</span></div>
+        <div class="entry"><span class="entry-key">luck_bonus</span><span class="entry-val">Integer. Affects item quality rolls throughout the run.</span></div>
+        <div class="entry"><span class="entry-key">sword_range_bonus</span><span class="entry-val">Added to sword_range — visibly larger sweep arc.</span></div>
+        <div class="entry"><span class="entry-key">armour_bonus</span><span class="entry-val">Flat damage absorbed per hit.</span></div>
+        <div class="entry"><span class="entry-key">grants_flight</span><span class="entry-val">Bool flag. Reserved for two-layer dig system. <span class="tag tag-twist">twist</span></span></div>
+      </div>
+
+      <div class="subsection">
+        <h3>Current item pool</h3>
+        <div class="item-card">
+          <div class="item-name">🟣 Violet Cortinarius <span style="font-family:var(--mono);font-size:11px;color:var(--text3);font-weight:400;">Cortinarius violaceus</span></div>
+          <div class="item-stats">
+            <span class="item-stat up">sword_damage +1.0</span>
+            <span class="item-stat up">luck +2</span>
+            <span class="item-stat down">max_hp −1.0</span>
+            <span class="item-stat down">move_speed −20.0</span>
+          </div>
+        </div>
+        <div class="note note-success">More mushrooms to be added. Each should have a real-world basis — toxicity maps to trade-offs, rarity maps to power, colour maps to visual identity.</div>
+      </div>
+
+      <div class="subsection">
+        <h3>How items are found</h3>
+        <div class="entry"><span class="entry-key">treasure rooms</span><span class="entry-val">2 items on hovering pedestals. Walk over one — both removed, item applied.</span></div>
+        <div class="entry"><span class="entry-key">boss drops</span><span class="entry-val">Guaranteed high-quality item on boss defeat.</span></div>
+        <div class="entry"><span class="entry-key">mini-boss drops</span><span class="entry-val">Guaranteed heart container or mid-tier item.</span></div>
+        <div class="entry"><span class="entry-key">idle rooms</span><span class="entry-val">Trinkets or consumables on ground. Walk over to collect.</span></div>
+        <div class="entry"><span class="entry-key">secret rooms</span><span class="entry-val">Rare or out-of-pool item. Reward for digging.</span></div>
+        <div class="entry"><span class="entry-key">shop rooms</span><span class="entry-val">Currency-based purchases. <span class="tag tag-later">later</span></span></div>
+      </div>
+
+      <div class="subsection">
+        <h3>Design notes</h3>
+        <div class="entry"><span class="entry-key">synergies</span><span class="entry-val">Items listen to EventBus signals — dig events, kill events, damage events. Synergy hooks built in from day one.</span></div>
+        <div class="entry"><span class="entry-key">limits</span><span class="entry-val">No hard cap on passives. 1 active slot. 2 trinket slots.</span></div>
+        <div class="entry"><span class="entry-key">pools</span><span class="entry-val">Global pool + per-zone pool weighted by depth. Boss rooms use separate boss-tier pool.</span></div>
+        <div class="note note-success">The shovel is the natural item synergy anchor. Items that modify digging, change what is buried, or react to dig events will feel native and thematic to this game's identity.</div>
+      </div>
+    </section>
+
+    <!-- 06 · BUILD ORDER -->
+    <section class="section" id="order">
+      <div class="section-header">
+        <div class="section-icon">📋</div>
+        <div class="section-titles">
+          <div class="section-num">SECTION 06</div>
+          <h2>Build Order</h2>
+        </div>
+      </div>
+
+      <div class="impl-grid">
+        <div class="impl-card done">
+          <span class="impl-n">01</span>
+          <div class="impl-body">
+            <div class="impl-title">Player controller ✓</div>
+            <div class="impl-desc">Movement, sword arc swing, shovel utility, dodge roll. Sword visible and rotates to aim.</div>
+          </div>
+        </div>
+        <div class="impl-card done">
+          <span class="impl-n">02</span>
+          <div class="impl-body">
+            <div class="impl-title">PlayerStats resource ✓</div>
+            <div class="impl-desc">Full stat sheet as Godot Resource. Duplicated per run. All systems read from it.</div>
+          </div>
+        </div>
+        <div class="impl-card done">
+          <span class="impl-n">03</span>
+          <div class="impl-body">
+            <div class="impl-title">Combat room ✓</div>
+            <div class="impl-desc">Locked doors, enemy spawner, unlock on clear, velocity-based door detection.</div>
+          </div>
+        </div>
+        <div class="impl-card done">
+          <span class="impl-n">04</span>
+          <div class="impl-body">
+            <div class="impl-title">Basic enemy ✓</div>
+            <div class="impl-desc">DummyEnemy with HP tracking, hit count, total damage logging. Combat validated.</div>
+          </div>
+        </div>
+        <div class="impl-card done">
+          <span class="impl-n">05</span>
+          <div class="impl-body">
+            <div class="impl-title">Room generation ✓</div>
+            <div class="impl-desc">RoomData resource, RoomGenerator autoload, template + procedural scatter system.</div>
+          </div>
+        </div>
+        <div class="impl-card done">
+          <span class="impl-n">06</span>
+          <div class="impl-body">
+            <div class="impl-title">Room transitions ✓</div>
+            <div class="impl-desc">RoomManager autoload. Player persists. Spawns at correct opposing door.</div>
+          </div>
+        </div>
+        <div class="impl-card done">
+          <span class="impl-n">07</span>
+          <div class="impl-body">
+            <div class="impl-title">Treasure room + items ✓</div>
+            <div class="impl-desc">2 hovering pedestals, walk-over pickup, ItemData pipeline, Violet Cortinarius.</div>
+          </div>
+        </div>
+        <div class="impl-card">
+          <span class="impl-n">08</span>
+          <div class="impl-body">
+            <div class="impl-title">Minimap HUD</div>
+            <div class="impl-desc">Corner minimap, room grid, visited tracking, special room icons.</div>
+          </div>
+        </div>
+        <div class="impl-card">
+          <span class="impl-n">09</span>
+          <div class="impl-body">
+            <div class="impl-title">First real enemy</div>
+            <div class="impl-desc">Chase AI, contact damage, behavioural state machine. Replaces DummyEnemy in pool.</div>
+          </div>
+        </div>
+        <div class="impl-card">
+          <span class="impl-n">10</span>
+          <div class="impl-body">
+            <div class="impl-title">First boss</div>
+            <div class="impl-desc">Multi-phase scripted AI, boss room logic, guaranteed major item drop.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="note note-twist" style="margin-top:1.25rem">Once step 10 is solid and the core loop is playable end-to-end, the <strong>big twist layer</strong> begins — the underground digging system that makes this unlike anything else. Everything above is deliberately designed to accommodate it without being torn apart.</div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span>GDD · Untitled Roguelite · v0.3</span>
+    <span>Living document — update as design evolves</span>
+  </div>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('.section');
+  const navLinks = document.querySelectorAll('.nav-list a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector('.nav-list a[href="#' + e.target.id + '"]');
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.2 });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
