@@ -334,6 +334,28 @@
   .progress-fill.done { background: var(--green); }
   .progress-val   { font-family: var(--mono); font-size: 11px; color: var(--text3); min-width: 36px; text-align: right; }
 
+  .gif-showcase {
+    margin-top: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius-lg, 8px);
+    overflow: hidden;
+    background: var(--bg3);
+  }
+  .gif-showcase-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: .4rem .85rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg4);
+  }
+  .gif-showcase img {
+    width: 100%;
+    display: block;
+  }
+
   footer { border-top: 1px solid var(--border); padding: 1.5rem 0; margin-top: 2rem; }
   .footer-inner {
     max-width: 860px; margin: 0 auto; padding: 0 2.5rem;
@@ -486,6 +508,18 @@
             <span class="ms-icon">✅</span>
             <span class="ms-text"><strong>ItemData resource + stat pipeline</strong> — items apply bonuses and penalties directly to PlayerStats on pickup. Negative max_hp_bonus floors at 2 hearts minimum. First item live: <strong>Violet Cortinarius</strong>. <span class="ms-label">done</span></span>
           </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>Fly enemy — first real AI</strong> — fast, small forest fly with swarm behaviour. Three-layer movement: sine-wave lateral oscillation, randomized velocity bursts, and per-fly wander offset so no two flies move identically. Flies physically separate from each other and push the player. Contact damage with 1.5s player i-frames. 2 sword hits to kill at base damage. <span class="ms-label">done</span></span>
+            <div class="gif-showcase">
+              <div class="gif-showcase-label">in-game — fly swarm AI</div>
+              <img src="./gifs/flies.gif" alt="Fly enemy swarm AI demonstration">
+            </div>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>Heartbeat dig mechanic</strong> — spatial audio hidden in the treasure room. A randomized invisible source plays a looping heartbeat that grows louder as the player approaches. The shovel's one dig per room either succeeds (within 150px radius) or fails. Sound stops on either outcome. <span class="ms-label">done</span></span>
+          </li>
         </ul>
       </div>
 
@@ -494,7 +528,6 @@
         <ul class="milestone-list">
           <li><span class="ms-icon">⬜</span><span class="ms-text">Minimap HUD — corner minimap rendering the room grid, visited rooms, and special room type icons.</span></li>
           <li><span class="ms-icon">⬜</span><span class="ms-text">Expand item pool — more mushroom items with varied stat trade-offs and thematic lore.</span></li>
-          <li><span class="ms-icon">⬜</span><span class="ms-text">First real enemy — chase AI, contact damage, and behavioural state machine.</span></li>
           <li><span class="ms-icon">⬜</span><span class="ms-text">Full map generation — directional zone world, biome theming, boss room placement at max depth.</span></li>
           <li><span class="ms-icon">⬜</span><span class="ms-text">First boss — multi-phase scripted AI, boss room logic, guaranteed major item drop.</span></li>
           <li><span class="ms-icon">⬜</span><span class="ms-text">Two-layer dig system — the big twist. Shovel opens access to the underground layer. Everything is designed to accommodate this without being torn apart.</span></li>
