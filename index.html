@@ -360,6 +360,58 @@
   .progress-fill.done { background: var(--green); }
   .progress-val   { font-family: var(--mono); font-size: 11px; color: var(--text3); min-width: 36px; text-align: right; }
 
+  .map-viewer {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--bg3);
+    margin-top: .75rem;
+  }
+  .map-viewer-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .4rem .85rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg4);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    user-select: none;
+  }
+  .map-viewer-hint { font-size: 10px; color: var(--text3); font-family: var(--mono); }
+  .map-viewer-controls { display: flex; gap: 6px; }
+  .map-ctrl-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    border: 1px solid var(--border2);
+    background: var(--bg3);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .map-ctrl-btn:hover { border-color: var(--accent2); color: var(--accent); }
+  .map-canvas-wrap {
+    width: 100%;
+    height: 480px;
+    overflow: hidden;
+    position: relative;
+    cursor: grab;
+  }
+  .map-canvas-wrap.grabbing { cursor: grabbing; }
+  .map-canvas-wrap img {
+    position: absolute;
+    transform-origin: 0 0;
+    will-change: transform;
+    user-select: none;
+    pointer-events: none;
+    max-width: none;
+  }
+
   footer { border-top: 1px solid var(--border); padding: 1.5rem 0; margin-top: 2rem; }
   .footer-inner {
     max-width: 860px; margin: 0 auto; padding: 0 2.5rem;
@@ -401,6 +453,7 @@
     <div class="nav-label">Contents</div>
     <ul class="nav-list">
       <li><a href="#milestones" class="active"><span class="nav-num">00</span>Milestones</a></li>
+      <li><a href="#worldmap"><span class="nav-num">↗</span>World map</a></li>
       <li><a href="#movement"><span class="nav-num">01</span>Movement &amp; Combat</a></li>
       <li><a href="#health"><span class="nav-num">02</span>Health &amp; Stats</a></li>
       <li><a href="#rooms"><span class="nav-num">03</span>Room Types</a></li>
@@ -538,6 +591,41 @@
           <li><span class="ms-icon">⬜</span><span class="ms-text">First boss — multi-phase scripted AI, boss room logic, guaranteed major item drop.</span></li>
           <li><span class="ms-icon">⬜</span><span class="ms-text">Two-layer dig system — the big twist. Shovel opens access to the underground layer. Everything is designed to accommodate this without being torn apart.</span></li>
         </ul>
+      </div>
+    </section>
+
+    </section>
+
+    <!-- WORLD MAP -->
+    <section class="section" id="worldmap">
+      <div class="section-header">
+        <div class="section-icon">🌍</div>
+        <div class="section-titles">
+          <div class="section-num">WORLD MAP</div>
+          <h2>Zone &amp; Room Layout</h2>
+        </div>
+      </div>
+      <div class="subsection">
+        <h3>Planned world structure</h3>
+        <div class="entry"><span class="entry-key">layout</span><span class="entry-val">Top-down grid. Starting room at center. Four cardinal zones expand outward — each with its own biome, enemies and boss.</span></div>
+        <div class="entry"><span class="entry-key">depth</span><span class="entry-val">Manhattan distance from start determines zone intensity. Near-centre rooms feel neutral. Outer rooms feel dangerous and themed.</span></div>
+        <div class="entry"><span class="entry-key">note</span><span class="entry-val">This is a planning diagram — not the final generated world. Room counts and exact layouts will be determined by the map generator.</span></div>
+      </div>
+      <div class="map-viewer" id="map-viewer">
+        <div class="map-viewer-bar">
+          <span>world map — planning diagram</span>
+          <div class="map-viewer-controls">
+            <button class="map-ctrl-btn" onclick="mapZoom(0.25)">＋</button>
+            <button class="map-ctrl-btn" onclick="mapZoom(-0.25)">－</button>
+            <button class="map-ctrl-btn" onclick="mapReset()">reset</button>
+          </div>
+        </div>
+        <div class="map-canvas-wrap" id="map-wrap">
+          <img id="map-img" src="./images/markmap.png" alt="World map planning diagram" draggable="false">
+        </div>
+        <div style="padding:.35rem .85rem;border-top:1px solid var(--border);background:var(--bg4);">
+          <span class="map-viewer-hint">scroll to zoom · drag to pan · double-click to reset</span>
+        </div>
       </div>
     </section>
 
@@ -909,6 +997,136 @@
 </footer>
 
 <script>
+  // ── MAP PAN/ZOOM ──────────────────────────────────
+  const wrap = document.getElementById('map-wrap');
+  const img  = document.getElementById('map-img');
+
+  let scale = 1, minScale = 0.2, maxScale = 8;
+  let originX = 0, originY = 0;
+  let dragging = false, startX, startY, startOX, startOY;
+
+  function applyTransform() {
+    img.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
+  }
+
+  function mapZoom(delta) {
+    const wRect = wrap.getBoundingClientRect();
+    const cx = wRect.width / 2;
+    const cy = wRect.height / 2;
+    const newScale = Math.min(maxScale, Math.max(minScale, scale + delta));
+    const ratio = newScale / scale;
+    originX = cx - ratio * (cx - originX);
+    originY = cy - ratio * (cy - originY);
+    scale = newScale;
+    applyTransform();
+  }
+
+  function mapReset() {
+    scale = 1; originX = 0; originY = 0;
+    applyTransform();
+  }
+
+  // scroll to zoom
+  wrap.addEventListener('wheel', e => {
+    e.preventDefault();
+    const wRect = wrap.getBoundingClientRect();
+    const mx = e.clientX - wRect.left;
+    const my = e.clientY - wRect.top;
+    const delta = e.deltaY < 0 ? 0.15 : -0.15;
+    const newScale = Math.min(maxScale, Math.max(minScale, scale + delta));
+    const ratio = newScale / scale;
+    originX = mx - ratio * (mx - originX);
+    originY = my - ratio * (my - originY);
+    scale = newScale;
+    applyTransform();
+  }, { passive: false });
+
+  // drag to pan
+  wrap.addEventListener('mousedown', e => {
+    dragging = true;
+    startX = e.clientX; startY = e.clientY;
+    startOX = originX; startOY = originY;
+    wrap.classList.add('grabbing');
+  });
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    originX = startOX + (e.clientX - startX);
+    originY = startOY + (e.clientY - startY);
+    applyTransform();
+  });
+  window.addEventListener('mouseup', () => {
+    dragging = false;
+    wrap.classList.remove('grabbing');
+  });
+
+  // touch support
+  let lastTouchDist = null;
+  wrap.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      dragging = true;
+      startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+      startOX = originX; startOY = originY;
+    }
+    if (e.touches.length === 2) {
+      dragging = false;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      lastTouchDist = Math.sqrt(dx*dx + dy*dy);
+    }
+  }, { passive: true });
+  wrap.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (e.touches.length === 1 && dragging) {
+      originX = startOX + (e.touches[0].clientX - startX);
+      originY = startOY + (e.touches[0].clientY - startY);
+      applyTransform();
+    }
+    if (e.touches.length === 2 && lastTouchDist !== null) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      const delta = (dist - lastTouchDist) * 0.01;
+      lastTouchDist = dist;
+      const wRect = wrap.getBoundingClientRect();
+      const mx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - wRect.left;
+      const my = (e.touches[0].clientY + e.touches[1].clientY) / 2 - wRect.top;
+      const newScale = Math.min(maxScale, Math.max(minScale, scale + delta));
+      const ratio = newScale / scale;
+      originX = mx - ratio * (mx - originX);
+      originY = my - ratio * (my - originY);
+      scale = newScale;
+      applyTransform();
+    }
+  }, { passive: false });
+  wrap.addEventListener('touchend', () => {
+    dragging = false;
+    lastTouchDist = null;
+  });
+
+  // double click to reset
+  wrap.addEventListener('dblclick', mapReset);
+
+  // once image loads, center it in the viewer
+  img.addEventListener('load', () => {
+    const wRect = wrap.getBoundingClientRect();
+    originX = (wRect.width  - img.naturalWidth)  / 2;
+    originY = (wRect.height - img.naturalHeight) / 2;
+    // fit to viewer if image is larger
+    const fitScale = Math.min(
+      wRect.width  / img.naturalWidth,
+      wRect.height / img.naturalHeight
+    );
+    if (fitScale < 1) {
+      scale = fitScale;
+      originX = (wRect.width  - img.naturalWidth  * scale) / 2;
+      originY = (wRect.height - img.naturalHeight * scale) / 2;
+    }
+    applyTransform();
+  });
+</script>
+
+<script>
+  // ── NAV SCROLL HIGHLIGHT ──────────────────────────
   const sections = document.querySelectorAll('.section');
   const navLinks = document.querySelectorAll('.nav-list a');
   const observer = new IntersectionObserver(entries => {
