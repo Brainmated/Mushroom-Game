@@ -63,9 +63,9 @@
     pointer-events: none;
   }
   .header-inner {
-    max-width: 1200px;
+    max-width: 860px;
     margin: 0 auto;
-    padding: 0 3.5rem;
+    padding: 0 2.5rem;
     position: relative;
   }
   .doc-eyebrow {
@@ -98,11 +98,11 @@
   .doc-meta span::before { content: '// '; color: var(--text3); }
 
   .layout {
-    max-width: 1200px;
+    max-width: 860px;
     margin: 0 auto;
-    padding: 0 3.5rem;
+    padding: 0 2.5rem;
     display: grid;
-    grid-template-columns: 260px 1fr;
+    grid-template-columns: 220px 1fr;
     gap: 0 3rem;
     align-items: start;
   }
@@ -360,74 +360,56 @@
   .progress-fill.done { background: var(--green); }
   .progress-val   { font-family: var(--mono); font-size: 11px; color: var(--text3); min-width: 36px; text-align: right; }
 
+  .enemy-table { width: 100%; border-collapse: collapse; margin-top: .4rem; }
+  .enemy-table th {
+    font-family: var(--mono); font-size: 10px; color: var(--text3);
+    text-transform: uppercase; letter-spacing: .08em; text-align: left;
+    padding: 6px 12px; background: var(--bg3); border-bottom: 1px solid var(--border);
+  }
+  .enemy-table td { font-size: 13px; padding: 7px 12px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); }
+  .enemy-table td:first-child { font-family: var(--mono); color: var(--accent); font-size: 12px; white-space: nowrap; }
+  .enemy-table tr:last-child td { border-bottom: none; }
+  .enemy-table tr:hover td { background: var(--bg3); }
+
   .map-viewer {
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-    background: var(--bg3);
-    margin-top: .75rem;
+    border: 1px solid var(--border); border-radius: 6px;
+    overflow: hidden; background: var(--bg3); margin-top: .75rem;
   }
   .map-viewer-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: .4rem .85rem;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg4);
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    user-select: none;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .4rem .85rem; border-bottom: 1px solid var(--border);
+    background: var(--bg4); font-family: var(--mono); font-size: 10px;
+    color: var(--text3); letter-spacing: .08em; text-transform: uppercase; user-select: none;
   }
   .map-viewer-controls { display: flex; gap: 6px; }
   .map-ctrl-btn {
-    font-family: var(--mono);
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 3px;
-    border: 1px solid var(--border2);
-    background: var(--bg3);
-    color: var(--text2);
-    cursor: pointer;
-    transition: all .15s;
+    font-family: var(--mono); font-size: 11px; padding: 2px 8px;
+    border-radius: 3px; border: 1px solid var(--border2);
+    background: var(--bg3); color: var(--text2); cursor: pointer; transition: all .15s;
   }
   .map-ctrl-btn:hover { border-color: var(--accent2); color: var(--accent); }
   .map-canvas-wrap {
-    width: 100%;
-    height: 520px;
-    overflow: hidden;
-    position: relative;
-    cursor: grab;
+    width: 100%; height: 520px; overflow: hidden; position: relative; cursor: grab;
   }
   .map-canvas-wrap.grabbing { cursor: grabbing; }
   .map-canvas-wrap img {
-    position: absolute;
-    transform-origin: 0 0;
-    will-change: transform;
-    user-select: none;
-    pointer-events: none;
-    max-width: none;
+    position: absolute; transform-origin: 0 0;
+    will-change: transform; user-select: none; pointer-events: none; max-width: none;
   }
   .map-viewer-hint {
-    padding: .35rem .85rem;
-    border-top: 1px solid var(--border);
-    background: var(--bg4);
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text3);
+    padding: .35rem .85rem; border-top: 1px solid var(--border);
+    background: var(--bg4); font-family: var(--mono); font-size: 10px; color: var(--text3);
   }
 
   footer { border-top: 1px solid var(--border); padding: 1.5rem 0; margin-top: 2rem; }
   .footer-inner {
-    max-width: 1200px; margin: 0 auto; padding: 0 3.5rem;
+    max-width: 860px; margin: 0 auto; padding: 0 2.5rem;
     display: flex; justify-content: space-between; align-items: center;
     flex-wrap: wrap; gap: 1rem;
     font-family: var(--mono); font-size: 11px; color: var(--text3);
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 700px) {
     .layout { grid-template-columns: 1fr; }
     .sidebar { display: none; }
     header, .layout, .footer-inner { padding-left: 1.25rem; padding-right: 1.25rem; }
@@ -449,7 +431,7 @@
       <span>Pre-production foundations</span>
       <span>Godot 4.6.1</span>
       <span>GDScript</span>
-      <span>v0.3 — living document</span>
+      <span>v0.4 — living document</span>
     </div>
   </div>
 </header>
@@ -460,13 +442,14 @@
     <div class="nav-label">Contents</div>
     <ul class="nav-list">
       <li><a href="#milestones" class="active"><span class="nav-num">00</span>Milestones</a></li>
-      <li><a href="#"><span class="nav-num">↗</span>World map</a></li>
+      <li><a href="#worldmap"><span class="nav-num">↗</span>World map</a></li>
       <li><a href="#movement"><span class="nav-num">01</span>Movement &amp; Combat</a></li>
       <li><a href="#health"><span class="nav-num">02</span>Health &amp; Stats</a></li>
       <li><a href="#rooms"><span class="nav-num">03</span>Room Types</a></li>
-      <li><a href="#generation"><span class="nav-num">04</span>Map Generation</a></li>
-      <li><a href="#items"><span class="nav-num">05</span>Items &amp; Economy</a></li>
-      <li><a href="#order"><span class="nav-num">06</span>Build Order</a></li>
+      <li><a href="#enemies"><span class="nav-num">04</span>Enemies &amp; Bosses</a></li>
+      <li><a href="#generation"><span class="nav-num">05</span>Map Generation</a></li>
+      <li><a href="#items"><span class="nav-num">06</span>Items &amp; Economy</a></li>
+      <li><a href="#order"><span class="nav-num">07</span>Build Order</a></li>
     </ul>
     <div class="nav-divider"></div>
     <div class="nav-label">Progress</div>
@@ -492,17 +475,22 @@
         <span class="progress-val" style="color:var(--green)">100%</span>
       </div>
       <div class="progress-row">
+        <span class="progress-label">Enemies</span>
+        <div class="progress-bar"><div class="progress-fill done" style="width:100%"></div></div>
+        <span class="progress-val" style="color:var(--green)">100%</span>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">First boss</span>
+        <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
+        <span class="progress-val">60%</span>
+      </div>
+      <div class="progress-row">
         <span class="progress-label">Item system</span>
         <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
         <span class="progress-val">40%</span>
       </div>
       <div class="progress-row">
         <span class="progress-label">Minimap HUD</span>
-        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-        <span class="progress-val">0%</span>
-      </div>
-      <div class="progress-row">
-        <span class="progress-label">First boss</span>
         <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
         <span class="progress-val">0%</span>
       </div>
@@ -586,6 +574,18 @@
             <span class="ms-icon">✅</span>
             <span class="ms-text"><strong>Heartbeat dig mechanic</strong> — spatial audio hidden in the treasure room. A randomized invisible source plays a looping heartbeat that grows louder as the player approaches. The shovel's one dig per room either succeeds (within 150px radius) or fails. Sound stops on either outcome. <span class="ms-label">done</span></span>
           </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>Sword pushback</strong> — every sword hit applies a directional velocity impulse away from the player to the enemy. Force and decay are @export variables per enemy. Bosses receive reduced pushback — a small stagger rather than a full knockback. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>Chuck — first boss</strong> — giant squirrel with 50 HP, slow chase AI (80 px/s), telegraphed windup attack (red sprite flash, 0.6s windup), melee swing hitbox (3s cooldown, 1 full heart damage), reduced pushback resistance. Boss room accessible via south door of starting room. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>Universal boss HP bar</strong> — BossHPBar CanvasLayer lives on the player's Camera2D. Hidden by default, activated via EventBus signals (boss_fight_started, boss_hp_changed, boss_fight_ended). Displays boss name and a red fill bar that shrinks with damage. No HP logic lives in the boss script itself. <span class="ms-label">done</span></span>
+          </li>
         </ul>
       </div>
 
@@ -594,8 +594,8 @@
         <ul class="milestone-list">
           <li><span class="ms-icon">⬜</span><span class="ms-text">Minimap HUD — corner minimap rendering the room grid, visited rooms, and special room type icons.</span></li>
           <li><span class="ms-icon">⬜</span><span class="ms-text">Expand item pool — more mushroom items with varied stat trade-offs and thematic lore.</span></li>
-          <li><span class="ms-icon">⬜</span><span class="ms-text">Full map generation — directional zone world, biome theming, boss room placement at max depth.</span></li>
-          <li><span class="ms-icon">⬜</span><span class="ms-text">First boss — multi-phase scripted AI, boss room logic, guaranteed major item drop.</span></li>
+          <li><span class="ms-icon">⬜</span><span class="ms-text">Chuck phase 2 — additional attack patterns, speed increase at low HP.</span></li>
+          <li><span class="ms-icon">⬜</span><span class="ms-text">Full map generation — directional zone world, biome theming, boss room at max depth per zone.</span></li>
           <li><span class="ms-icon">⬜</span><span class="ms-text">Two-layer dig system — the big twist. Shovel opens access to the underground layer. Everything is designed to accommodate this without being torn apart.</span></li>
         </ul>
       </div>
@@ -614,7 +614,7 @@
         <h3>Planned world structure</h3>
         <div class="entry"><span class="entry-key">layout</span><span class="entry-val">Top-down grid. Starting room at center. Four cardinal zones expand outward — each with its own biome, enemies and boss.</span></div>
         <div class="entry"><span class="entry-key">depth</span><span class="entry-val">Manhattan distance from start determines zone intensity. Near-centre rooms feel neutral. Outer rooms feel dangerous and themed.</span></div>
-        <div class="entry"><span class="entry-key">note</span><span class="entry-val">Planning diagram — not the final generated world. Room counts and exact layouts will be determined by the map generator.</span></div>
+        <div class="entry"><span class="entry-key">note</span><span class="entry-val">Planning diagram — not the final generated world. Room counts and layouts determined by the map generator.</span></div>
       </div>
       <div class="map-viewer">
         <div class="map-viewer-bar">
@@ -746,7 +746,7 @@
         <div class="room-grid">
           <div class="room-card done">
             <div class="room-label">🏠 Starting room <span class="tag tag-done">built</span></div>
-            <div class="room-desc">No enemies. All 4 doors open. Player spawns at center. West door leads to treasure room. All other doors lead to combat rooms.</div>
+            <div class="room-desc">No enemies. All 4 doors open. Player spawns at center. West → treasure room. South → boss room. Others → combat rooms.</div>
           </div>
           <div class="room-card done">
             <div class="room-label">⚔️ Combat room <span class="tag tag-done">built</span></div>
@@ -768,9 +768,9 @@
             <div class="room-label">👹 Mini-boss room</div>
             <div class="room-desc">One strong enemy. Guaranteed heart container or mid-tier item on defeat.</div>
           </div>
-          <div class="room-card wide">
-            <div class="room-label">💀 Boss room</div>
-            <div class="room-desc">One per directional zone. Multi-phase boss fight. Guaranteed major item drop. Defeating it unlocks the next zone or ends the run.</div>
+          <div class="room-card done wide">
+            <div class="room-label">💀 Boss room <span class="tag tag-done">built</span></div>
+            <div class="room-desc">One per directional zone. Chuck (giant squirrel) is the first boss. Universal BossHPBar shown at bottom of screen. Door locked until boss defeated. Guaranteed major item drop.</div>
           </div>
         </div>
         <div class="note note-success">Secret rooms use the shovel — not explosives like BoI. The player digs a diggable thin-wall tile to reveal the hidden entrance. Thematic, distinctive, and mechanically unique.</div>
@@ -786,12 +786,69 @@
       </div>
     </section>
 
-    <!-- 04 · MAP GENERATION -->
+    <!-- 04 · ENEMIES & BOSSES -->
+    <section class="section" id="enemies">
+      <div class="section-header">
+        <div class="section-icon">👾</div>
+        <div class="section-titles">
+          <div class="section-num">SECTION 04</div>
+          <h2>Enemies &amp; Bosses</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3>Pushback system — universal</h3>
+        <div class="entry"><span class="entry-key">how it works</span><span class="entry-val">Every sword hit calls apply_pushback(direction) on the enemy if the method exists. Direction is always player-to-enemy normalized. A velocity impulse is added and decays via lerp each frame.</span></div>
+        <div class="entry"><span class="entry-key">per-enemy tuning</span><span class="entry-val">pushback_force and pushback_decay are @export variables on each enemy script. Tunable per enemy in the Inspector without touching code.</span></div>
+        <div class="entry"><span class="entry-key">boss reduction</span><span class="entry-val">Bosses have significantly lower pushback_force — a small stagger rather than a full knockback.</span></div>
+      </div>
+
+      <div class="subsection">
+        <h3>Regular enemies</h3>
+        <table class="enemy-table">
+          <thead>
+            <tr><th>Enemy</th><th>HP</th><th>Speed</th><th>Damage</th><th>Pushback</th><th>Behaviour</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Fly</td>
+              <td>1.5</td>
+              <td>220 px/s</td>
+              <td>0.5 (contact)</td>
+              <td>400 force</td>
+              <td>Chase + sine-wave lateral oscillation + random velocity bursts + per-fly wander offset. Physically separates from other flies and pushes the player.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <h3>Bosses</h3>
+        <table class="enemy-table">
+          <thead>
+            <tr><th>Boss</th><th>HP</th><th>Speed</th><th>Damage</th><th>Pushback</th><th>Behaviour</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Chuck</td>
+              <td>50</td>
+              <td>80 px/s</td>
+              <td>1.0 (swing)</td>
+              <td>80 force</td>
+              <td>Slow chase. Stops in range, windup flash (0.6s red sprite), melee swing hitbox (3s cooldown). Universal HP bar shown at bottom of screen via EventBus.</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="note note-info">All bosses use the universal BossHPBar via EventBus signals — boss_fight_started, boss_hp_changed, boss_fight_ended. No HP bar logic lives in the boss script itself.</div>
+      </div>
+    </section>
+
+    <!-- 05 · MAP GENERATION -->
     <section class="section" id="generation">
       <div class="section-header">
         <div class="section-icon">🧭</div>
         <div class="section-titles">
-          <div class="section-num">SECTION 04</div>
+          <div class="section-num">SECTION 05</div>
           <h2>Procedural Map Generation</h2>
         </div>
       </div>
@@ -833,12 +890,12 @@
       </div>
     </section>
 
-    <!-- 05 · ITEMS -->
+    <!-- 06 · ITEMS -->
     <section class="section" id="items">
       <div class="section-header">
         <div class="section-icon">🍄</div>
         <div class="section-titles">
-          <div class="section-num">SECTION 05</div>
+          <div class="section-num">SECTION 06</div>
           <h2>Item Acquisition &amp; Economy</h2>
         </div>
       </div>
@@ -903,12 +960,12 @@
       </div>
     </section>
 
-    <!-- 06 · BUILD ORDER -->
+    <!-- 07 · BUILD ORDER -->
     <section class="section" id="order">
       <div class="section-header">
         <div class="section-icon">📋</div>
         <div class="section-titles">
-          <div class="section-num">SECTION 06</div>
+          <div class="section-num">SECTION 07</div>
           <h2>Build Order</h2>
         </div>
       </div>
@@ -938,8 +995,8 @@
         <div class="impl-card done">
           <span class="impl-n">04</span>
           <div class="impl-body">
-            <div class="impl-title">Basic enemy ✓</div>
-            <div class="impl-desc">DummyEnemy with HP tracking, hit count, total damage logging. Combat validated.</div>
+            <div class="impl-title">Fly enemy ✓</div>
+            <div class="impl-desc">Swarm AI — sine oscillation, velocity bursts, wander offset, pushback. Replaces DummyEnemy in pool.</div>
           </div>
         </div>
         <div class="impl-card done">
@@ -960,28 +1017,28 @@
           <span class="impl-n">07</span>
           <div class="impl-body">
             <div class="impl-title">Treasure room + items ✓</div>
-            <div class="impl-desc">2 hovering pedestals, walk-over pickup, ItemData pipeline, Violet Cortinarius.</div>
+            <div class="impl-desc">2 hovering pedestals, walk-over pickup, ItemData pipeline, heartbeat dig mechanic.</div>
+          </div>
+        </div>
+        <div class="impl-card done">
+          <span class="impl-n">08</span>
+          <div class="impl-body">
+            <div class="impl-title">Chuck — first boss ✓</div>
+            <div class="impl-desc">Chase AI, windup flash, melee swing, universal BossHPBar via EventBus signals.</div>
           </div>
         </div>
         <div class="impl-card">
-          <span class="impl-n">08</span>
+          <span class="impl-n">09</span>
           <div class="impl-body">
             <div class="impl-title">Minimap HUD</div>
             <div class="impl-desc">Corner minimap, room grid, visited tracking, special room icons.</div>
           </div>
         </div>
         <div class="impl-card">
-          <span class="impl-n">09</span>
-          <div class="impl-body">
-            <div class="impl-title">First real enemy</div>
-            <div class="impl-desc">Chase AI, contact damage, behavioural state machine. Replaces DummyEnemy in pool.</div>
-          </div>
-        </div>
-        <div class="impl-card">
           <span class="impl-n">10</span>
           <div class="impl-body">
-            <div class="impl-title">First boss</div>
-            <div class="impl-desc">Multi-phase scripted AI, boss room logic, guaranteed major item drop.</div>
+            <div class="impl-title">Full map generation</div>
+            <div class="impl-desc">Directional zone world, biome theming, boss at max depth per zone.</div>
           </div>
         </div>
       </div>
@@ -994,7 +1051,7 @@
 
 <footer>
   <div class="footer-inner">
-    <span>GDD · Untitled Roguelite · v0.3</span>
+    <span>GDD · Mushroom Roguelite · v0.4</span>
     <span>Living document — update as design evolves</span>
   </div>
 </footer>
@@ -1015,105 +1072,49 @@
 </script>
 
 <script>
-  // ── MAP PAN/ZOOM ──────────────────────────────────
   const wrap = document.getElementById('map-wrap');
   const img  = document.getElementById('map-img');
   let scale = 1, minScale = 0.1, maxScale = 8;
   let originX = 0, originY = 0;
   let dragging = false, startX, startY, startOX, startOY;
-
-  function applyTransform() {
-    img.style.transform = `translate(${originX}px,${originY}px) scale(${scale})`;
-  }
+  function applyTransform() { img.style.transform = `translate(${originX}px,${originY}px) scale(${scale})`; }
   function mapZoom(delta) {
     const r = wrap.getBoundingClientRect();
-    const cx = r.width / 2, cy = r.height / 2;
     const ns = Math.min(maxScale, Math.max(minScale, scale + delta));
     const ratio = ns / scale;
-    originX = cx - ratio * (cx - originX);
-    originY = cy - ratio * (cy - originY);
+    originX = r.width/2 - ratio*(r.width/2 - originX);
+    originY = r.height/2 - ratio*(r.height/2 - originY);
     scale = ns; applyTransform();
   }
   function mapReset() {
     const r = wrap.getBoundingClientRect();
-    const fs = Math.min(r.width / img.naturalWidth, r.height / img.naturalHeight, 1);
+    const fs = Math.min(r.width/img.naturalWidth, r.height/img.naturalHeight, 1);
     scale = fs;
-    originX = (r.width  - img.naturalWidth  * scale) / 2;
-    originY = (r.height - img.naturalHeight * scale) / 2;
+    originX = (r.width - img.naturalWidth*scale)/2;
+    originY = (r.height - img.naturalHeight*scale)/2;
     applyTransform();
   }
   wrap.addEventListener('wheel', e => {
     e.preventDefault();
     const r = wrap.getBoundingClientRect();
-    const mx = e.clientX - r.left, my = e.clientY - r.top;
-    const delta = e.deltaY < 0 ? 0.15 : -0.15;
-    const ns = Math.min(maxScale, Math.max(minScale, scale + delta));
-    const ratio = ns / scale;
-    originX = mx - ratio * (mx - originX);
-    originY = my - ratio * (my - originY);
+    const mx = e.clientX-r.left, my = e.clientY-r.top;
+    const d = e.deltaY < 0 ? 0.15 : -0.15;
+    const ns = Math.min(maxScale, Math.max(minScale, scale+d));
+    const ratio = ns/scale;
+    originX = mx - ratio*(mx-originX);
+    originY = my - ratio*(my-originY);
     scale = ns; applyTransform();
   }, { passive: false });
-  wrap.addEventListener('mousedown', e => {
-    dragging = true;
-    startX = e.clientX; startY = e.clientY;
-    startOX = originX; startOY = originY;
-    wrap.classList.add('grabbing');
-  });
-  window.addEventListener('mousemove', e => {
-    if (!dragging) return;
-    originX = startOX + (e.clientX - startX);
-    originY = startOY + (e.clientY - startY);
-    applyTransform();
-  });
-  window.addEventListener('mouseup', () => {
-    dragging = false;
-    wrap.classList.remove('grabbing');
-  });
+  wrap.addEventListener('mousedown', e => { dragging=true; startX=e.clientX; startY=e.clientY; startOX=originX; startOY=originY; wrap.classList.add('grabbing'); });
+  window.addEventListener('mousemove', e => { if(!dragging) return; originX=startOX+(e.clientX-startX); originY=startOY+(e.clientY-startY); applyTransform(); });
+  window.addEventListener('mouseup', () => { dragging=false; wrap.classList.remove('grabbing'); });
   wrap.addEventListener('dblclick', mapReset);
-  let lastTouchDist = null;
-  wrap.addEventListener('touchstart', e => {
-    if (e.touches.length === 1) {
-      dragging = true;
-      startX = e.touches[0].clientX; startY = e.touches[0].clientY;
-      startOX = originX; startOY = originY;
-    }
-    if (e.touches.length === 2) {
-      dragging = false;
-      const dx = e.touches[0].clientX - e.touches[1].clientX;
-      const dy = e.touches[0].clientY - e.touches[1].clientY;
-      lastTouchDist = Math.sqrt(dx*dx + dy*dy);
-    }
-  }, { passive: true });
-  wrap.addEventListener('touchmove', e => {
-    e.preventDefault();
-    if (e.touches.length === 1 && dragging) {
-      originX = startOX + (e.touches[0].clientX - startX);
-      originY = startOY + (e.touches[0].clientY - startY);
-      applyTransform();
-    }
-    if (e.touches.length === 2 && lastTouchDist !== null) {
-      const dx = e.touches[0].clientX - e.touches[1].clientX;
-      const dy = e.touches[0].clientY - e.touches[1].clientY;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      const delta = (dist - lastTouchDist) * 0.01;
-      lastTouchDist = dist;
-      const r = wrap.getBoundingClientRect();
-      const mx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - r.left;
-      const my = (e.touches[0].clientY + e.touches[1].clientY) / 2 - r.top;
-      const ns = Math.min(maxScale, Math.max(minScale, scale + delta));
-      const ratio = ns / scale;
-      originX = mx - ratio * (mx - originX);
-      originY = my - ratio * (my - originY);
-      scale = ns; applyTransform();
-    }
-  }, { passive: false });
-  wrap.addEventListener('touchend', () => { dragging = false; lastTouchDist = null; });
   img.addEventListener('load', () => {
     const r = wrap.getBoundingClientRect();
-    const fs = Math.min(r.width / img.naturalWidth, r.height / img.naturalHeight, 1);
+    const fs = Math.min(r.width/img.naturalWidth, r.height/img.naturalHeight, 1);
     scale = fs;
-    originX = (r.width  - img.naturalWidth  * scale) / 2;
-    originY = (r.height - img.naturalHeight * scale) / 2;
+    originX = (r.width - img.naturalWidth*scale)/2;
+    originY = (r.height - img.naturalHeight*scale)/2;
     applyTransform();
   });
 </script>
