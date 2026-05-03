@@ -371,10 +371,7 @@
   .enemy-table tr:last-child td { border-bottom: none; }
   .enemy-table tr:hover td { background: var(--bg3); }
 
-  .map-viewer {
-    border: 1px solid var(--border); border-radius: 6px;
-    overflow: hidden; background: var(--bg3); margin-top: .75rem;
-  }
+  .map-viewer { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: var(--bg3); margin-top: .75rem; }
   .map-viewer-bar {
     display: flex; align-items: center; justify-content: space-between;
     padding: .4rem .85rem; border-bottom: 1px solid var(--border);
@@ -388,18 +385,10 @@
     background: var(--bg3); color: var(--text2); cursor: pointer; transition: all .15s;
   }
   .map-ctrl-btn:hover { border-color: var(--accent2); color: var(--accent); }
-  .map-canvas-wrap {
-    width: 100%; height: 520px; overflow: hidden; position: relative; cursor: grab;
-  }
+  .map-canvas-wrap { width: 100%; height: 520px; overflow: hidden; position: relative; cursor: grab; }
   .map-canvas-wrap.grabbing { cursor: grabbing; }
-  .map-canvas-wrap img {
-    position: absolute; transform-origin: 0 0;
-    will-change: transform; user-select: none; pointer-events: none; max-width: none;
-  }
-  .map-viewer-hint {
-    padding: .35rem .85rem; border-top: 1px solid var(--border);
-    background: var(--bg4); font-family: var(--mono); font-size: 10px; color: var(--text3);
-  }
+  .map-canvas-wrap img { position: absolute; transform-origin: 0 0; will-change: transform; user-select: none; pointer-events: none; max-width: none; }
+  .map-viewer-hint { padding: .35rem .85rem; border-top: 1px solid var(--border); background: var(--bg4); font-family: var(--mono); font-size: 10px; color: var(--text3); }
 
   footer { border-top: 1px solid var(--border); padding: 1.5rem 0; margin-top: 2rem; }
   .footer-inner {
@@ -431,7 +420,7 @@
       <span>Pre-production foundations</span>
       <span>Godot 4.6.1</span>
       <span>GDScript</span>
-      <span>v0.4 — living document</span>
+      <span>v0.5 — living document</span>
     </div>
   </div>
 </header>
@@ -481,8 +470,13 @@
       </div>
       <div class="progress-row">
         <span class="progress-label">First boss</span>
-        <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
-        <span class="progress-val">60%</span>
+        <div class="progress-bar"><div class="progress-fill done" style="width:100%"></div></div>
+        <span class="progress-val" style="color:var(--green)">100%</span>
+      </div>
+      <div class="progress-row">
+        <span class="progress-label">Two-layer system</span>
+        <div class="progress-bar"><div class="progress-fill done" style="width:100%"></div></div>
+        <span class="progress-val" style="color:var(--green)">100%</span>
       </div>
       <div class="progress-row">
         <span class="progress-label">Item system</span>
@@ -586,17 +580,30 @@
             <span class="ms-icon">✅</span>
             <span class="ms-text"><strong>Universal boss HP bar</strong> — BossHPBar CanvasLayer lives on the player's Camera2D. Hidden by default, activated via EventBus signals (boss_fight_started, boss_hp_changed, boss_fight_ended). Displays boss name and a red fill bar that shrinks with damage. No HP logic lives in the boss script itself. <span class="ms-label">done</span></span>
           </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>Two-layer world system</strong> — full surface and underground layer architecture. DigRoom scene hosts a randomly placed DigPile. Player digs pile to spawn a DescentHole and descend to the UndergroundStartingRoom. Layer tracked in RoomManager (surface vs underground). Null scene guard and descent direction handling added. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>Underground eldritch shader</strong> — GLSL shader applied automatically to all underground TileMapLayers via RoomManager on transition. Darkens tiles and adds a deep purple-violet tint. Darkness and tint are uniform parameters tunable without code changes. <span class="ms-label">done</span></span>
+          </li>
+          <li>
+            <span class="ms-icon">✅</span>
+            <span class="ms-text"><strong>Player lantern light</strong> — PointLight2D on player activates only underground. Warm amber glow illuminates the room around the player. Light masks configured so the lantern illuminates room tiles (layer 5) but not the player sprite (layer 1), preventing colour distortion on the player model. <span class="ms-label">done</span></span>
+          </li>
         </ul>
       </div>
 
       <div class="subsection">
         <h3>Up next</h3>
         <ul class="milestone-list">
+          <li><span class="ms-icon">⬜</span><span class="ms-text">Ascent hole — allow player to return from underground to surface layer.</span></li>
+          <li><span class="ms-icon">⬜</span><span class="ms-text">Underground combat, treasure and boss rooms — mirrored room types for the bottom layer with harder enemies and rarer items.</span></li>
           <li><span class="ms-icon">⬜</span><span class="ms-text">Minimap HUD — corner minimap rendering the room grid, visited rooms, and special room type icons.</span></li>
           <li><span class="ms-icon">⬜</span><span class="ms-text">Expand item pool — more mushroom items with varied stat trade-offs and thematic lore.</span></li>
           <li><span class="ms-icon">⬜</span><span class="ms-text">Chuck phase 2 — additional attack patterns, speed increase at low HP.</span></li>
           <li><span class="ms-icon">⬜</span><span class="ms-text">Full map generation — directional zone world, biome theming, boss room at max depth per zone.</span></li>
-          <li><span class="ms-icon">⬜</span><span class="ms-text">Two-layer dig system — the big twist. Shovel opens access to the underground layer. Everything is designed to accommodate this without being torn apart.</span></li>
         </ul>
       </div>
     </section>
@@ -612,8 +619,10 @@
       </div>
       <div class="subsection">
         <h3>Planned world structure</h3>
-        <div class="entry"><span class="entry-key">layout</span><span class="entry-val">Top-down grid. Starting room at center. Four cardinal zones expand outward — each with its own biome, enemies and boss.</span></div>
+        <div class="entry"><span class="entry-key">layout</span><span class="entry-val">Top-down grid. Starting room at center. Four cardinal zones expand outward — each with its own surface biome, underground layer, enemies and boss.</span></div>
         <div class="entry"><span class="entry-key">depth</span><span class="entry-val">Manhattan distance from start determines zone intensity. Near-centre rooms feel neutral. Outer rooms feel dangerous and themed.</span></div>
+        <div class="entry"><span class="entry-key">two layers</span><span class="entry-val">Every zone has a surface layer and an underground layer. The underground is accessed by digging a DigPile in a dedicated DigRoom. The mycelium network connects all underground layers.</span></div>
+        <div class="entry"><span class="entry-key">fairy rings</span><span class="entry-val">Fast travel points on the surface connecting zones to each other. Ancient mushroom circles of unknown origin.</span></div>
         <div class="entry"><span class="entry-key">note</span><span class="entry-val">Planning diagram — not the final generated world. Room counts and layouts determined by the map generator.</span></div>
       </div>
       <div class="map-viewer">
@@ -746,7 +755,7 @@
         <div class="room-grid">
           <div class="room-card done">
             <div class="room-label">🏠 Starting room <span class="tag tag-done">built</span></div>
-            <div class="room-desc">No enemies. All 4 doors open. Player spawns at center. West → treasure room. South → boss room. Others → combat rooms.</div>
+            <div class="room-desc">No enemies. All 4 doors open. Player spawns at center. West → treasure. South → boss. East → dig room. North → combat.</div>
           </div>
           <div class="room-card done">
             <div class="room-label">⚔️ Combat room <span class="tag tag-done">built</span></div>
@@ -767,6 +776,10 @@
           <div class="room-card">
             <div class="room-label">👹 Mini-boss room</div>
             <div class="room-desc">One strong enemy. Guaranteed heart container or mid-tier item on defeat.</div>
+          </div>
+          <div class="room-card done">
+            <div class="room-label">⛏️ Dig room <span class="tag tag-done">built</span></div>
+            <div class="room-desc">Surface room with a randomly placed DigPile. Player uses shovel to dig it — spawns a DescentHole. Walking over the hole descends to the underground layer.</div>
           </div>
           <div class="room-card done wide">
             <div class="room-label">💀 Boss room <span class="tag tag-done">built</span></div>
@@ -795,47 +808,32 @@
           <h2>Enemies &amp; Bosses</h2>
         </div>
       </div>
-
       <div class="subsection">
         <h3>Pushback system — universal</h3>
         <div class="entry"><span class="entry-key">how it works</span><span class="entry-val">Every sword hit calls apply_pushback(direction) on the enemy if the method exists. Direction is always player-to-enemy normalized. A velocity impulse is added and decays via lerp each frame.</span></div>
-        <div class="entry"><span class="entry-key">per-enemy tuning</span><span class="entry-val">pushback_force and pushback_decay are @export variables on each enemy script. Tunable per enemy in the Inspector without touching code.</span></div>
+        <div class="entry"><span class="entry-key">per-enemy tuning</span><span class="entry-val">pushback_force and pushback_decay are @export variables. Tunable per enemy in the Inspector without touching code.</span></div>
         <div class="entry"><span class="entry-key">boss reduction</span><span class="entry-val">Bosses have significantly lower pushback_force — a small stagger rather than a full knockback.</span></div>
       </div>
-
       <div class="subsection">
         <h3>Regular enemies</h3>
         <table class="enemy-table">
-          <thead>
-            <tr><th>Enemy</th><th>HP</th><th>Speed</th><th>Damage</th><th>Pushback</th><th>Behaviour</th></tr>
-          </thead>
+          <thead><tr><th>Enemy</th><th>HP</th><th>Speed</th><th>Damage</th><th>Pushback</th><th>Behaviour</th></tr></thead>
           <tbody>
             <tr>
-              <td>Fly</td>
-              <td>1.5</td>
-              <td>220 px/s</td>
-              <td>0.5 (contact)</td>
-              <td>400 force</td>
+              <td>Fly</td><td>1.5</td><td>220 px/s</td><td>0.5 (contact)</td><td>400 force</td>
               <td>Chase + sine-wave lateral oscillation + random velocity bursts + per-fly wander offset. Physically separates from other flies and pushes the player.</td>
             </tr>
           </tbody>
         </table>
       </div>
-
       <div class="subsection">
         <h3>Bosses</h3>
         <table class="enemy-table">
-          <thead>
-            <tr><th>Boss</th><th>HP</th><th>Speed</th><th>Damage</th><th>Pushback</th><th>Behaviour</th></tr>
-          </thead>
+          <thead><tr><th>Boss</th><th>HP</th><th>Speed</th><th>Damage</th><th>Pushback</th><th>Behaviour</th></tr></thead>
           <tbody>
             <tr>
-              <td>Chuck</td>
-              <td>50</td>
-              <td>80 px/s</td>
-              <td>1.0 (swing)</td>
-              <td>80 force</td>
-              <td>Slow chase. Stops in range, windup flash (0.6s red sprite), melee swing hitbox (3s cooldown). Universal HP bar shown at bottom of screen via EventBus.</td>
+              <td>Chuck</td><td>50</td><td>80 px/s</td><td>1.0 (swing)</td><td>80 force</td>
+              <td>Slow chase. Stops in range, windup flash (0.6s red sprite), melee swing hitbox (3s cooldown). Universal HP bar via EventBus.</td>
             </tr>
           </tbody>
         </table>
@@ -1027,15 +1025,29 @@
             <div class="impl-desc">Chase AI, windup flash, melee swing, universal BossHPBar via EventBus signals.</div>
           </div>
         </div>
-        <div class="impl-card">
+        <div class="impl-card done">
           <span class="impl-n">09</span>
+          <div class="impl-body">
+            <div class="impl-title">Two-layer system ✓</div>
+            <div class="impl-desc">DigRoom, DigPile, DescentHole, UndergroundStartingRoom. Eldritch shader + lantern light.</div>
+          </div>
+        </div>
+        <div class="impl-card">
+          <span class="impl-n">10</span>
           <div class="impl-body">
             <div class="impl-title">Minimap HUD</div>
             <div class="impl-desc">Corner minimap, room grid, visited tracking, special room icons.</div>
           </div>
         </div>
         <div class="impl-card">
-          <span class="impl-n">10</span>
+          <span class="impl-n">11</span>
+          <div class="impl-body">
+            <div class="impl-title">Underground room suite</div>
+            <div class="impl-desc">Combat, treasure and boss rooms for the underground layer. Harder enemies, rarer items.</div>
+          </div>
+        </div>
+        <div class="impl-card">
+          <span class="impl-n">12</span>
           <div class="impl-body">
             <div class="impl-title">Full map generation</div>
             <div class="impl-desc">Directional zone world, biome theming, boss at max depth per zone.</div>
@@ -1043,7 +1055,7 @@
         </div>
       </div>
 
-      <div class="note note-twist" style="margin-top:1.25rem">Once step 10 is solid and the core loop is playable end-to-end, the <strong>big twist layer</strong> begins — the underground digging system that makes this unlike anything else. Everything above is deliberately designed to accommodate it without being torn apart.</div>
+      <div class="note note-twist" style="margin-top:1.25rem">The two-layer underground system is now live. The <strong>big twist</strong> is no longer just a plan — it is the foundation the rest of the game builds on. Every zone will have a surface and an underground. The mycelium network connects them all.</div>
     </section>
 
   </main>
@@ -1051,7 +1063,7 @@
 
 <footer>
   <div class="footer-inner">
-    <span>GDD · Mushroom Roguelite · v0.4</span>
+    <span>GDD · Mushroom Roguelite · v0.5</span>
     <span>Living document — update as design evolves</span>
   </div>
 </footer>
